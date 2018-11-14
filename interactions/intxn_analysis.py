@@ -44,8 +44,8 @@ print 'Long time = %s frames' %long_time
 print 
 
 def get_names_and_table(rep, chain_n, lipid_focus):
-    system_p = md.Universe('../AN_replica_%s/protein_selection.pdb' %rep)
-    system_l = md.Universe('../AN_replica_%s/lipid_selection.pdb' %rep)
+    system_p = md.Universe('../input_files/files_rep%s/protein_selection.pdb' %rep)
+    system_l = md.Universe('../input_files/files_rep%s/lipid_selection.pdb' %rep)
     protein = system_p.select_atoms('name BB and segid %s' %chain_n)
     protein = protein[np.where(protein.atoms.occupancies == 1)]
     lipid = system_l.select_atoms('resname %s' %lipid_choice)
@@ -208,7 +208,7 @@ if not lipid_focus:
     long_tot = combine_dataframes(long1a, long1b, long2a, long2b, long3a, long3b, 1, 'long')
     df = pd.concat([max_tot, avg_tot, long_tot], axis = 1)
   
-    df.to_csv('arrays_csv/%s.df.byprotres.csv' %lipid_choice)
+    df.to_csv('arrays_csv/%s.max.avg.long.protres_index.csv' %lipid_choice)
     
     
     

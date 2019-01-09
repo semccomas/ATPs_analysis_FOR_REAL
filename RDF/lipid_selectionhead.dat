@@ -1,0 +1,4 @@
+group "CDL_group" and name PO41 GL0 GL11 GL12 GL21 GL22 PO42;
+group "POPE_group" and name NH3 PO4 GL1 GL2;
+group "POPC_group" and name NC3 PO4 GL1 GL2;
+group "POPA_group" and name PO4 GL1 GL2

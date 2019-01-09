@@ -10,10 +10,12 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-prompt = raw_input('all lipids(0) or by replica(1)?')
+
+#the promts were when  iwas playing around, now this is the publication figure version
+prompt = 1#raw_input('all lipids(0) or by replica(1)?')
 individual_reps = int(prompt)
-cutoff = float(raw_input('cutoff 1.8 or 2.3? ' ))
-no_noise = int(raw_input('With STD(0) or without?(1) '))  #plot std (0) or not(1)
+cutoff = 2.3#float(raw_input('cutoff 1.8 or 2.3? ' ))
+no_noise = 1#int(raw_input('With STD(0) or without?(1) '))  #plot std (0) or not(1)
 
 if individual_reps:
     tot = pd.read_csv('probs_%s.cutoff_by_replica.csv' %cutoff)
@@ -164,52 +166,57 @@ bot = 0
 top = 760
 f, (ax1, ax2, ax3) = plt.subplots(3, 1, sharex=True)
 
-ax1.plot(np.arange(bot, top*5, 5), Mcdl_ii[bot:top]*100, label = 'CDL', color = 'blue')
-ax1.plot(np.arange(bot, top*5, 5), Mpe_ii[bot:top]*100, label = 'POPE', color = 'orange')
-ax1.plot(np.arange(bot, top*5, 5), Mpc_ii[bot:top]*100, label = 'POPC', color = 'green')
-ax1.plot(np.arange(bot, top*5, 5), Mpa_ii[bot:top]*100, label = 'POPA', color = 'red')
+ax1.plot(np.arange(bot, top*5, 5), Mpa_ii[bot:top]*100, label = 'POPA', color = '#E6BF26')
+ax1.plot(np.arange(bot, top*5, 5), Mcdl_ii[bot:top]*100, label = 'CDL', color = '#6167B4')
+ax1.plot(np.arange(bot, top*5, 5), Mpc_ii[bot:top]*100, label = 'POPC', color = '#54ABA7')
+ax1.plot(np.arange(bot, top*5, 5), Mpe_ii[bot:top]*100, label = 'POPE', color = '#C73A29')
+
 
 if not no_noise:
-    ax1.fill_between(np.arange(bot, top*5, 5), (Mcdl_ii + Scdl_ii)[bot:top]*100, (Mcdl_ii - Scdl_ii)[bot:top]*100, alpha = 0.5, color ='blue')
-    ax1.fill_between(np.arange(bot, top*5, 5), (Mpe_ii + Spe_ii)[bot:top]*100, (Mpe_ii - Spe_ii)[bot:top]*100, alpha = 0.5, color ='orange')
-    ax1.fill_between(np.arange(bot, top*5, 5), (Mpc_ii + Spc_ii)[bot:top]*100, (Mpc_ii - Spc_ii)[bot:top]*100, alpha = 0.5, color ='green')
-    ax1.fill_between(np.arange(bot, top*5, 5), (Mpa_ii + Spa_ii)[bot:top]*100, (Mpa_ii - Spa_ii)[bot:top]*100, alpha = 0.5, color ='red')
+    ax1.fill_between(np.arange(bot, top*5, 5), (Mpa_ii + Spa_ii)[bot:top]*100, (Mpa_ii - Spa_ii)[bot:top]*100, alpha = 0.5, color ='#E6BF26')
+    ax1.fill_between(np.arange(bot, top*5, 5), (Mcdl_ii + Scdl_ii)[bot:top]*100, (Mcdl_ii - Scdl_ii)[bot:top]*100, alpha = 0.5, color ='#6167B4')
+    ax1.fill_between(np.arange(bot, top*5, 5), (Mpc_ii + Spc_ii)[bot:top]*100, (Mpc_ii - Spc_ii)[bot:top]*100, alpha = 0.5, color ='#54ABA7')
+    ax1.fill_between(np.arange(bot, top*5, 5), (Mpe_ii + Spe_ii)[bot:top]*100, (Mpe_ii - Spe_ii)[bot:top]*100, alpha = 0.5, color ='#C73A29')
+    
 
-ax1.set_title('P in to in')
+ax1.set_title('p in to in')
 ax1.set_ylim(0, 10)
 
 
+ax2.plot(np.arange(bot, top*5, 5), Mpa_oi[bot:top]*100, label = 'POPA', color = '#E6BF26')
+ax2.plot(np.arange(bot, top*5, 5), Mcdl_oi[bot:top]*100, label = 'CDL', color = '#6167B4')
+ax2.plot(np.arange(bot, top*5, 5), Mpc_oi[bot:top]*100, label = 'POPC', color = '#54ABA7')
+ax2.plot(np.arange(bot, top*5, 5), Mpe_oi[bot:top]*100, label = 'POPE', color = '#C73A29')
 
-ax2.plot(np.arange(bot, top*5, 5), Mcdl_oi[bot:top]*100, label = 'CDL', color = 'blue')
-ax2.plot(np.arange(bot, top*5, 5), Mpe_oi[bot:top]*100, label = 'POPE', color = 'orange')
-ax2.plot(np.arange(bot, top*5, 5), Mpc_oi[bot:top]*100, label = 'POPC', color = 'green')
-ax2.plot(np.arange(bot, top*5, 5), Mpa_oi[bot:top]*100, label = 'POPA', color = 'red')
 
 if not no_noise:
-    ax2.fill_between(np.arange(bot, top*5, 5), (Mcdl_oi + Scdl_oi)[bot:top]*100, (Mcdl_oi - Scdl_oi)[bot:top]*100, alpha = 0.5, color ='blue')
-    ax2.fill_between(np.arange(bot, top*5, 5), (Mpe_oi + Spe_oi)[bot:top]*100, (Mpe_oi - Spe_oi)[bot:top]*100, alpha = 0.5, color ='orange')
-    ax2.fill_between(np.arange(bot, top*5, 5), (Mpc_oi + Spc_oi)[bot:top]*100, (Mpc_oi - Spc_oi)[bot:top]*100, alpha = 0.5, color ='green')
-    ax2.fill_between(np.arange(bot, top*5, 5), (Mpa_oi + Spa_oi)[bot:top]*100, (Mpa_oi - Spa_oi)[bot:top]*100, alpha = 0.5, color ='red')
+    ax2.fill_between(np.arange(bot, top*5, 5), (Mpa_oi + Spa_oi)[bot:top]*100, (Mpa_oi - Spa_oi)[bot:top]*100, alpha = 0.5, color ='#E6BF26')
+    ax2.fill_between(np.arange(bot, top*5, 5), (Mcdl_oi + Scdl_oi)[bot:top]*100, (Mcdl_oi - Scdl_oi)[bot:top]*100, alpha = 0.5, color ='#6167B4')
+    ax2.fill_between(np.arange(bot, top*5, 5), (Mpc_oi + Spc_oi)[bot:top]*100, (Mpc_oi - Spc_oi)[bot:top]*100, alpha = 0.5, color ='#54ABA7')
+    ax2.fill_between(np.arange(bot, top*5, 5), (Mpe_oi + Spe_oi)[bot:top]*100, (Mpe_oi - Spe_oi)[bot:top]*100, alpha = 0.5, color ='#C73A29')
+    
 
 
-ax2.set_title('P out to in')
-ax2.set_ylabel('Probability(%)')
+ax2.set_title('p out to in')
+ax2.set_ylabel('Probability (%)')
 ax2.set_ylim(0, 10)
 
 
-ax3.plot(np.arange(bot, top*5, 5), Mcdl_io[bot:top]*100, label = 'CDL', color = 'blue')
-ax3.plot(np.arange(bot, top*5, 5), Mpe_io[bot:top]*100, label = 'POPE', color = 'orange')
-ax3.plot(np.arange(bot, top*5, 5), Mpc_io[bot:top]*100, label = 'POPC', color = 'green')
-ax3.plot(np.arange(bot, top*5, 5), Mpa_io[bot:top]*100, label = 'POPA', color = 'red')
+ax3.plot(np.arange(bot, top*5, 5), Mpa_io[bot:top]*100, label = 'POPA', color = '#E6BF26')
+ax3.plot(np.arange(bot, top*5, 5), Mcdl_io[bot:top]*100, label = 'CDL', color = '#6167B4')
+ax3.plot(np.arange(bot, top*5, 5), Mpc_io[bot:top]*100, label = 'POPC', color = '#54ABA7')
+ax3.plot(np.arange(bot, top*5, 5), Mpe_io[bot:top]*100, label = 'POPE', color = '#C73A29')
+
 
 if not no_noise:
-    ax3.fill_between(np.arange(bot, top*5, 5), (Mcdl_io + Scdl_io)[bot:top]*100, (Mcdl_io - Scdl_io)[bot:top]*100, alpha = 0.5, color ='blue')
-    ax3.fill_between(np.arange(bot, top*5, 5), (Mpe_io + Spe_io)[bot:top]*100, (Mpe_io - Spe_io)[bot:top]*100, alpha = 0.5, color ='orange')
-    ax3.fill_between(np.arange(bot, top*5, 5), (Mpc_io + Spc_io)[bot:top]*100, (Mpc_io - Spc_io)[bot:top]*100, alpha = 0.5, color ='green')
-    ax3.fill_between(np.arange(bot, top*5, 5), (Mpa_io + Spa_io)[bot:top]*100, (Mpa_io - Spa_io)[bot:top]*100, alpha = 0.5, color ='red')
+    ax3.fill_between(np.arange(bot, top*5, 5), (Mpa_io + Spa_io)[bot:top]*100, (Mpa_io - Spa_io)[bot:top]*100, alpha = 0.5, color ='#E6BF26')
+    ax3.fill_between(np.arange(bot, top*5, 5), (Mcdl_io + Scdl_io)[bot:top]*100, (Mcdl_io - Scdl_io)[bot:top]*100, alpha = 0.5, color ='#6167B4')
+    ax3.fill_between(np.arange(bot, top*5, 5), (Mpc_io + Spc_io)[bot:top]*100, (Mpc_io - Spc_io)[bot:top]*100, alpha = 0.5, color ='#54ABA7')
+    ax3.fill_between(np.arange(bot, top*5, 5), (Mpe_io + Spe_io)[bot:top]*100, (Mpe_io - Spe_io)[bot:top]*100, alpha = 0.5, color ='#C73A29')
+    
     
 
-ax3.set_title('P in to out')
+ax3.set_title('p in to out')
 ax3.set_ylim(0, 10)
 
 ratio = 0.1
@@ -219,22 +226,23 @@ for ax in [ax1, ax2, ax3]:
     ax.set_aspect(abs((xmax-xmin)/(ymax-ymin))*ratio, adjustable='box-forced')
 
 plt.xlim(bot,top*5 -1)
-plt.xlabel('Tau size in num. ns')
+plt.xlabel(r'$\tau  (ns)$')
 plt.tight_layout()
 lgd = plt.legend(loc='upper right', bbox_to_anchor=(-0.1, 0.5))
 
-txt = plt.gcf().text(0.3, 1, 'Probabilities at %s nm cutoff' %cutoff, fontsize=12)
+#txt = plt.gcf().text(0.3, 1, 'Probabilities at %s nm cutoff' %cutoff, fontsize=12)
+
 
 if individual_reps:
     if not no_noise:
-        plt.savefig('probs_plot.cutoff.%s.by_replica.std.png' %cutoff, bbox_extra_artists=(lgd,txt,), bbox_inches='tight', dpi = 900)
+        plt.savefig('probs_plot.cutoff.%s.by_replica.std.png' %cutoff, bbox_extra_artists=(lgd,txt,), bbox_inches='tight', dpi = 2000)
     if no_noise:
-        plt.savefig('probs_plot.cutoff.%s.by_replica.NOstd.png' %cutoff, bbox_extra_artists=(lgd,txt,), bbox_inches='tight', dpi = 900)        
+        plt.savefig('probs_plot.cutoff.%s.by_replica.NOstd.png' %cutoff, bbox_extra_artists=(lgd,txt,), bbox_inches='tight', dpi = 2000)        
 if not individual_reps:
     if not no_noise:
-        plt.savefig('probs_plot.cutoff.%s.combined.std.png' %cutoff, bbox_extra_artists=(lgd,txt,), bbox_inches='tight', dpi = 900)
+        plt.savefig('probs_plot.cutoff.%s.combined.std.png' %cutoff, bbox_extra_artists=(lgd,txt,), bbox_inches='tight', dpi = 2000)
     if no_noise:
-        plt.savefig('probs_plot.cutoff.%s.combined.NOstd.png' %cutoff, bbox_extra_artists=(lgd,txt,), bbox_inches='tight', dpi = 900)
+        plt.savefig('probs_plot.cutoff.%s.combined.NOstd.png' %cutoff, bbox_extra_artists=(lgd,txt,), bbox_inches='tight', dpi = 2000)
            
 
 

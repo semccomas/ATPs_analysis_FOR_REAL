@@ -40,7 +40,7 @@ print 'This script is meant to be run on one lipid type at a time, across all re
 print 'Will save a pdb file coloring score per residue'
 print 'Will output a numpy array in lipid_arrays that is for per lipid statistics'
 print 'Running for lipid name %s' %lipid_choice
-print 'Long time = %s frames' %long_time
+print 'Long time = %s ns' %(str(long_time * 5))
 print 
 
 def get_names_and_table(rep, chain_n, lipid_focus):
@@ -166,16 +166,16 @@ def get_names_and_table(rep, chain_n, lipid_focus):
 ###### parse tables and score  ############
 #############################################
 
-lipid_focus = 0
+lipid_focus = int(raw_input('Protein(0) or lipid(1) plotting? '))
 print 'making pdb colors...'
 raw1a, max1a, long1a, avg1a = get_names_and_table(1, 'A', lipid_focus)
 print '1A done!'
 raw1b, max1b, long1b, avg1b = get_names_and_table(1, 'B', lipid_focus)
 print '1B done!'
-raw2a, max2a, long2a, avg2a = get_names_and_table(2, 'A', lipid_focus)
-print '2A done!'
-raw2b, max2b, long2b, avg2b = get_names_and_table(2, 'B', lipid_focus)
-print '2B done!'
+#raw2a, max2a, long2a, avg2a = get_names_and_table(2, 'A', lipid_focus)
+print '2A done ignored!'
+#raw2b, max2b, long2b, avg2b = get_names_and_table(2, 'B', lipid_focus)
+print '2B done ignored!'
 raw3a, max3a, long3a, avg3a = get_names_and_table(3, 'A', lipid_focus)
 print '3A done!'
 raw3b, max3b, long3b, avg3b = get_names_and_table(3, 'B', lipid_focus)
@@ -183,16 +183,16 @@ print '3B done!'
 
 
 #raw3, max3, long3, avg3 = get_names_and_table(9, lipid_focus)
-
+'''
 def combine_dataframes(d1a, d1b, d2a, d2b, d3a, d3b, maxv, colname):
     if maxv:
-        d1 = pd.concat([d1a.max(), d1b.max()])
-        d2 = pd.concat([d2a.max(), d2b.max()])
-        d3 = pd.concat([d3a.max(), d3b.max()])
+        d1 = pd.concat([d1a.max(), d1b.max()]).groupby(level=0).max()  #this is more for the lipid arrays but it won't really affect the protein so much, take the max when adding the two arrays
+        d2 = pd.concat([d2a.max(), d2b.max()]).groupby(level=0).max()
+        d3 = pd.concat([d3a.max(), d3b.max()]).groupby(level=0).max()
     else:
-        d1 = pd.concat([d1a.mean(), d1b.mean()])
-        d2 = pd.concat([d2a.mean(), d2b.mean()])
-        d3 = pd.concat([d3a.mean(), d3b.mean()])
+        d1 = pd.concat([d1a.mean(), d1b.mean()]).groupby(level=0).mean()
+        d2 = pd.concat([d2a.mean(), d2b.mean()]).groupby(level=0).mean()
+        d3 = pd.concat([d3a.mean(), d3b.mean()]).groupby(level=0).mean()
         
     d_tot = pd.concat([d1,d2,d3], axis = 1)
     d_tot = d_tot.fillna(value = 0)
@@ -202,18 +202,47 @@ def combine_dataframes(d1a, d1b, d2a, d2b, d3a, d3b, maxv, colname):
     d_tot['max_%s' %colname] = d_tot[['%s_1'%colname, '%s_2'%colname, '%s_3'%colname]].max(axis = 1)
     return d_tot
 
-if not lipid_focus:
-    max_tot = combine_dataframes(max1a, max1b, max2a, max2b, max3a, max3b, 1, 'max')
-    avg_tot = combine_dataframes(avg1a, avg1b, avg2a, avg2b, avg3a, avg3b, 0, 'avg')
-    long_tot = combine_dataframes(long1a, long1b, long2a, long2b, long3a, long3b, 1, 'long')
-    df = pd.concat([max_tot, avg_tot, long_tot], axis = 1)
-  
+max_tot = combine_dataframes(max1a, max1b, max2a, max2b, max3a, max3b, 1, 'max')
+avg_tot = combine_dataframes(avg1a, avg1b, avg2a, avg2b, avg3a, avg3b, 0, 'avg')
+long_tot = combine_dataframes(long1a, long1b, long2a, long2b, long3a, long3b, 1, 'long')
+df = pd.concat([max_tot, avg_tot, long_tot], axis = 1)
+ 
+if not lipid_focus:    
     df.to_csv('arrays_csv/%s.max.avg.long.protres_index.csv' %lipid_choice)
+if lipid_focus:
+    df.to_csv('arrays_csv/%s.max.avg.long.lipres_index.csv' %lipid_choice)
+ '''   
     
     
+def combine_dataframesIGNTWO(d1a, d1b, d3a, d3b, maxv, colname):
+    if maxv:
+        d1 = pd.concat([d1a.max(), d1b.max()]).groupby(level=0).max()  #this is more for the lipid arrays but it won't really affect the protein so much, take the max when adding the two arrays
+        #d2 = pd.concat([d2a.max(), d2b.max()]).groupby(level=0).max()
+        d3 = pd.concat([d3a.max(), d3b.max()]).groupby(level=0).max()
+    else:
+        d1 = pd.concat([d1a.mean(), d1b.mean()]).groupby(level=0).mean()
+       # d2 = pd.concat([d2a.mean(), d2b.mean()]).groupby(level=0).mean()
+        d3 = pd.concat([d3a.mean(), d3b.mean()]).groupby(level=0).mean()
+        
+    d_tot = pd.concat([d1,d3], axis = 1)
+    d_tot = d_tot.fillna(value = 0)
+    d_tot = d_tot.rename(index=str, columns={0:'%s_1' %colname, 1:'%s_3' %colname})
+    d_tot['mean_%s' %colname] = d_tot[['%s_1'%colname, '%s_3'%colname]].mean(axis = 1)
+    d_tot['std_%s' %colname] = d_tot[['%s_1'%colname, '%s_3'%colname]].std(axis = 1)
+    d_tot['max_%s' %colname] = d_tot[['%s_1'%colname, '%s_3'%colname]].max(axis = 1)
+    return d_tot   
     
     
-    
+max_tot = combine_dataframesIGNTWO(max1a, max1b, max3a, max3b, 1, 'max')
+avg_tot = combine_dataframesIGNTWO(avg1a, avg1b, avg3a, avg3b, 0, 'avg')
+long_tot = combine_dataframesIGNTWO(long1a, long1b, long3a, long3b, 1, 'long')
+df = pd.concat([max_tot, avg_tot, long_tot], axis = 1)
+ 
+if not lipid_focus:    
+    df.to_csv('arrays_csv/%s.max.avg.long.protres_index.TWOGONEDELETEME.csv' %lipid_choice)
+if lipid_focus:
+    df.to_csv('arrays_csv/%s.max.avg.long.lipres_index.TWOGONEDELETEME.csv' %lipid_choice)
+      
     
     
     
